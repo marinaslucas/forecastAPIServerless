@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "target": "es6",
+    "sourceMap": true,
+    "declaration": true,
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "outDir": "dist",
+    "allowSyntheticDefaultImports": true,
+    "lib": ["ES2021", "ES2020.Promise"]
+  },
+  "exclude": ["node_modules", "services/template", "dist"]
+}

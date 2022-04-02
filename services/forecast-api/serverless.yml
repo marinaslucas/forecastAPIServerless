@@ -1,0 +1,33 @@
+service: forecast-api
+frameworkVersion: '2'
+useDotenv: true
+variablesResolutionMode: 20210326
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  lambdaHashingVersion: 20201221
+  stage: ${opt:stage, 'dev'}
+  region: us-east-1
+
+custom:
+  bundle:
+    tsConfig: '../../tsconfig.json'
+  serverless-offline-ssm:
+    stages:
+      - dev
+
+functions:
+  getForecast:
+    handler: src/handler.getForecast
+    events:
+      - http:
+          path: /forecast
+          method: get
+          cors: true
+
+plugins:
+  - serverless-offline-ssm
+  - serverless-offline
+  - serverless-bundle
+  - serverless-localstack

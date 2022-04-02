@@ -1,0 +1,19 @@
+{
+  "name": "sample-service",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sample Service",
+  "license": "Sallve Comércio de Cosméticos Ltda",
+  "main": "src/handler.js",
+  "scripts": {
+    "start": "serverless offline --stage local",
+    "test": "jest",
+    "dev:deploy": "serverless deploy --stage dev",
+    "prod:deploy": "serverless deploy --stage prod",
+    "lint": "eslint --fix --ext .js",
+    "lint:ci": "eslint --quiet --ext .js .",
+    "lint:fix": "eslint --fix --ext .js ."
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
