@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "Forecast Descriptor",
-  "license": "Sallve Comércio de Cosméticos Ltda",
+  "license": "",
   "main": "src/handler.js",
   "scripts": {
     "start": "serverless offline --stage local",

@@ -1,4 +1,4 @@
-service: service-template
+service: udemy-course
 frameworkVersion: '2'
 useDotenv: true
 variablesResolutionMode: 20210326
