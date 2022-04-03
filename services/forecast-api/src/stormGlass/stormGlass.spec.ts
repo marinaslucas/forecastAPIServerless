@@ -16,11 +16,11 @@ describe('StormGlass cliente', () => {
     it('should return the normalized forecast from the StormGlass service', async () => {
         const lat = -33.792726;
         const lng = 151.289824;
-
-        httpInstanceDefault.get = jest.fn().mockResolvedValue(stormglass_weather_response)
+        //mock do que vou receber do request:
+        httpInstanceDefault.get = jest.fn().mockResolvedValue({ data: stormglass_weather_response })
 
         const stormGlassService = StormGlassService(httpInstanceDefault);
-        const response = await stormGlassService.fetchPoints(lat, lng);
-        expect(response).toEqual(stormglass_weather_response_normalized);
+        const normalizedResponse = await stormGlassService.fetchPoints(lat, lng);
+        expect(normalizedResponse).toEqual(stormglass_weather_response_normalized);
     })
 })

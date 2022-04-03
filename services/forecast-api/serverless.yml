@@ -19,7 +19,7 @@ custom:
 
 functions:
   getForecast:
-    handler: src/handler.getForecast
+    handler: src/stormGlass/handler.stormGlass
     events:
       - http:
           path: /forecast
