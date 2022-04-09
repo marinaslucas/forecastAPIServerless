@@ -14,13 +14,13 @@ const stormGlassAPIParams = 'swellDirection%2CswellHeight%2CswellPeriod%2CwaveDi
 const stormGlassAPISource = 'noaa'
 
 export const StormGlassService = (httpRequest = HttpInstanceDefault) => {
-    const fetchPoints = async (lat: number, lng: number): Promise<StormGlassNormalizedPoint[]> => {
+    const fetchPointsNormalized = async (lat: number, lng: number): Promise<StormGlassNormalizedPoint[]> => {
         const path = `/v2/weather/point?params=${stormGlassAPIParams}&source=${stormGlassAPISource}&lat=${lat}&lng=${lng}`;
         const response = await httpRequest.get<StormGlassForecastResponse>(path);
         console.log(response.data)
         return normalizedResponse(response.data);
     }
-    return { fetchPoints }
+    return { fetchPointsNormalized }
 }
 export default StormGlassService;
 

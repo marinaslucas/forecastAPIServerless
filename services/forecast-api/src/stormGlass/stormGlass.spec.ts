@@ -1,7 +1,7 @@
 import StormGlassService from './service';
 import { HttpServiceFactory } from '../../../../common/http-2';
-import * as stormglass_weather_response from '../test/fixtures/stormglass_weather.json';
-import * as stormglass_weather_response_normalized from '../test/fixtures/stormglass_weather_normalized.json'
+import * as stormglass_weather_api_response from '../test/fixtures/stormglass_weather.json';
+import * as stormglass_weather_normalized from '../test/fixtures/stormglass_weather_normalized.json'
 
 const httpServiceFactory = HttpServiceFactory();
 const httpInstanceDefault = httpServiceFactory.create({
@@ -16,11 +16,9 @@ describe('StormGlass cliente', () => {
     it('should return the normalized forecast from the StormGlass service', async () => {
         const lat = -33.792726;
         const lng = 151.289824;
-        //mock do que vou receber do request:
-        httpInstanceDefault.get = jest.fn().mockResolvedValue({ data: stormglass_weather_response })
-
+        httpInstanceDefault.get = jest.fn().mockResolvedValue({ data: stormglass_weather_api_response })
         const stormGlassService = StormGlassService(httpInstanceDefault);
-        const normalizedResponse = await stormGlassService.fetchPoints(lat, lng);
-        expect(normalizedResponse).toEqual(stormglass_weather_response_normalized);
+        const normalizedPoints = await stormGlassService.fetchPointsNormalized(lat, lng); //array de pontos normalizados
+        expect(normalizedPoints).toEqual(stormglass_weather_normalized);
     })
 })

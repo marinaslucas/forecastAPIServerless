@@ -7,11 +7,12 @@ import StormGlassService from './service'
 const stormGlassService = StormGlassService();
 
 export async function stormGlass(event: APIGatewayEvent): Promise<APIGatewayProxyResult> {
+    console.log(event);
     try {
         const lat = 58.7984;
         const lng = 17.8081;
-        const stormGlassPoints = await stormGlassService.fetchPoints(lat, lng);
-    
+        const stormGlassPoints = await stormGlassService.fetchPointsNormalized(lat, lng);
+
         return {
             statusCode: 200,
             body: JSON.stringify(stormGlassPoints),

@@ -342,11 +342,12 @@ var __awaiter = undefined && undefined.__awaiter || function (thisArg, _argument
 const stormGlassService = Object(_service__WEBPACK_IMPORTED_MODULE_3__["default"])();
 function stormGlass(event) {
   return __awaiter(this, void 0, void 0, function* () {
+    console.log(event);
+
     try {
       const lat = 58.7984;
       const lng = 17.8081;
-      const stormGlassPoints = yield stormGlassService.fetchPoints(lat, lng); // Logger.info(JSON.stringify(stormGlassPoints));
-
+      const stormGlassPoints = yield stormGlassService.fetchPointsNormalized(lat, lng);
       return {
         statusCode: 200,
         body: JSON.stringify(stormGlassPoints),
@@ -420,7 +421,7 @@ const HttpInstanceDefault = Object(_common_http_2__WEBPACK_IMPORTED_MODULE_1__["
 const stormGlassAPIParams = 'swellDirection%2CswellHeight%2CswellPeriod%2CwaveDirection%2CwaveHeight%2CwindDirection%2CwindSpeed';
 const stormGlassAPISource = 'noaa';
 const StormGlassService = (httpRequest = HttpInstanceDefault) => {
-  const fetchPoints = (lat, lng) => __awaiter(void 0, void 0, void 0, function* () {
+  const fetchPointsNormalized = (lat, lng) => __awaiter(void 0, void 0, void 0, function* () {
     const path = `/v2/weather/point?params=${stormGlassAPIParams}&source=${stormGlassAPISource}&lat=${lat}&lng=${lng}`;
     const response = yield httpRequest.get(path);
     console.log(response.data);
@@ -428,7 +429,7 @@ const StormGlassService = (httpRequest = HttpInstanceDefault) => {
   });
 
   return {
-    fetchPoints
+    fetchPointsNormalized
   };
 };
 /* harmony default export */ __webpack_exports__["default"] = (StormGlassService);
