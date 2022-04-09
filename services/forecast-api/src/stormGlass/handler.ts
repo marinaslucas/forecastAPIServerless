@@ -2,17 +2,16 @@ import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { errorResponse } from 'common/api-gateway/utils';
 import Logger from '../../../../common/winston-logger';
 import { CORS_HEADERS } from '../constants';
-import { StormGlassService } from './service'
+import StormGlassService from './service'
 
 const stormGlassService = StormGlassService();
 
 export async function stormGlass(event: APIGatewayEvent): Promise<APIGatewayProxyResult> {
     try {
-        console.log(event);
         const lat = 58.7984;
         const lng = 17.8081;
         const stormGlassPoints = await stormGlassService.fetchPoints(lat, lng);
-        Logger.info(JSON.stringify(stormGlassPoints));
+    
         return {
             statusCode: 200,
             body: JSON.stringify(stormGlassPoints),

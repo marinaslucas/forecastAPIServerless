@@ -1,4 +1,4 @@
-import { StormGlassService } from './service';
+import StormGlassService from './service';
 import { HttpServiceFactory } from '../../../../common/http-2';
 import * as stormglass_weather_response from '../test/fixtures/stormglass_weather.json';
 import * as stormglass_weather_response_normalized from '../test/fixtures/stormglass_weather_normalized.json'

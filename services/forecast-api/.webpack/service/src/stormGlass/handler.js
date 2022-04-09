@@ -300,9 +300,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! source-map-support/register */ "../../source-map-support/register.js");
 /* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(source_map_support_register__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var common_api_gateway_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! common/api-gateway/utils */ "../../../common/api-gateway/utils.ts");
-/* harmony import */ var _common_winston_logger__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../common/winston-logger */ "../../../common/winston-logger/index.ts");
-/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../constants */ "../../../services/forecast-api/src/constants.ts");
-/* harmony import */ var _service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./service */ "../../../services/forecast-api/src/stormGlass/service.ts");
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../constants */ "../../../services/forecast-api/src/constants.ts");
+/* harmony import */ var _service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./service */ "../../../services/forecast-api/src/stormGlass/service.ts");
 
 
 var __awaiter = undefined && undefined.__awaiter || function (thisArg, _arguments, P, generator) {
@@ -340,20 +339,18 @@ var __awaiter = undefined && undefined.__awaiter || function (thisArg, _argument
 
 
 
-
-const stormGlassService = Object(_service__WEBPACK_IMPORTED_MODULE_4__["StormGlassService"])();
+const stormGlassService = Object(_service__WEBPACK_IMPORTED_MODULE_3__["default"])();
 function stormGlass(event) {
   return __awaiter(this, void 0, void 0, function* () {
     try {
-      console.log(event);
       const lat = 58.7984;
       const lng = 17.8081;
-      const stormGlassPoints = yield stormGlassService.fetchPoints(lat, lng);
-      _common_winston_logger__WEBPACK_IMPORTED_MODULE_2__["default"].info(JSON.stringify(stormGlassPoints));
+      const stormGlassPoints = yield stormGlassService.fetchPoints(lat, lng); // Logger.info(JSON.stringify(stormGlassPoints));
+
       return {
         statusCode: 200,
         body: JSON.stringify(stormGlassPoints),
-        headers: Object.assign({}, _constants__WEBPACK_IMPORTED_MODULE_3__["CORS_HEADERS"])
+        headers: Object.assign({}, _constants__WEBPACK_IMPORTED_MODULE_2__["CORS_HEADERS"])
       };
     } catch (error) {
       return Object(common_api_gateway_utils__WEBPACK_IMPORTED_MODULE_1__["errorResponse"])(error);
@@ -367,7 +364,7 @@ function stormGlass(event) {
 /*!*******************************************************************************************************!*\
   !*** C:/Users/Marina Lucas/Documents/Dev/forecastAPI/services/forecast-api/src/stormGlass/service.ts ***!
   \*******************************************************************************************************/
-/*! exports provided: StormGlassService */
+/*! exports provided: StormGlassService, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -434,6 +431,7 @@ const StormGlassService = (httpRequest = HttpInstanceDefault) => {
     fetchPoints
   };
 };
+/* harmony default export */ __webpack_exports__["default"] = (StormGlassService);
 
 const normalizedResponse = stormGlassResponse => {
   const validPoints = stormGlassResponse.hours.filter(isPointValid);

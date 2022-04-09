@@ -22,10 +22,11 @@ export const StormGlassService = (httpRequest = HttpInstanceDefault) => {
     }
     return { fetchPoints }
 }
+export default StormGlassService;
 
 const normalizedResponse = (stormGlassResponse: StormGlassForecastResponse): StormGlassNormalizedPoint[] => {
     const validPoints: StormGlassPoint[] = stormGlassResponse.hours.filter(isPointValid)
-    const normalizedPoints = validPoints.map((point: StormGlassPoint) => {
+    const normalizedPoints = validPoints.map((point: StormGlassPoint): StormGlassNormalizedPoint => {
         return {
             swellDirection: point.swellDirection[stormGlassAPISource],
             swellHeight: point.swellHeight[stormGlassAPISource],
