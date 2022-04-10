@@ -146,64 +146,6 @@ const ApiGatewayResponseServiceFactory = () => {
 
 /***/ }),
 
-/***/ "../../../common/http-2/index.ts":
-/*!******************************************************************************!*\
-  !*** C:/Users/Marina Lucas/Documents/Dev/forecastAPI/common/http-2/index.ts ***!
-  \******************************************************************************/
-/*! exports provided: HttpServiceFactory */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HttpServiceFactory", function() { return HttpServiceFactory; });
-/* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! source-map-support/register */ "../../source-map-support/register.js");
-/* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(source_map_support_register__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "../../axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _winston_logger__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../winston-logger */ "../../../common/winston-logger/index.ts");
-
-
-
-const HttpServiceFactory = (http = axios__WEBPACK_IMPORTED_MODULE_1___default.a) => {
-  const configInterceptors = httpClient => {
-    // Add a request interceptor
-    httpClient.interceptors.request.use(function (config) {
-      // Do something before request is sent
-      return config;
-    }, function (error) {
-      // Do something with request error
-      return Promise.reject(error);
-    }); // Add a response interceptor
-
-    httpClient.interceptors.response.use(function (response) {
-      // Any status code that lie within the range of 2xx cause this function to trigger
-      // Do something with response data
-      return response;
-    }, function (error) {
-      // Any status codes that falls outside the range of 2xx cause this function to trigger
-      // Do something with response error
-      _winston_logger__WEBPACK_IMPORTED_MODULE_2__["default"].info(JSON.stringify({
-        context: 'HttpService-Error',
-        status: error.response.status,
-        data: error.response.data,
-        headers: error.response.headers
-      }));
-      return Promise.reject(error);
-    });
-    return httpClient;
-  };
-
-  return {
-    create: config => {
-      const HttpInstanceDefault = http.create(config);
-      const HttpInstanceDefaultWithInterceptors = configInterceptors(HttpInstanceDefault);
-      return HttpInstanceDefaultWithInterceptors;
-    }
-  };
-};
-
-/***/ }),
-
 /***/ "../../../common/winston-logger/index.ts":
 /*!**************************************************************************************!*\
   !*** C:/Users/Marina Lucas/Documents/Dev/forecastAPI/common/winston-logger/index.ts ***!
@@ -373,7 +315,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "StormGlassService", function() { return StormGlassService; });
 /* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! source-map-support/register */ "../../source-map-support/register.js");
 /* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(source_map_support_register__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _common_http_2__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../common/http-2 */ "../../../common/http-2/index.ts");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "../../axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../config */ "../../../services/forecast-api/src/config.ts");
 
 
@@ -411,19 +354,16 @@ var __awaiter = undefined && undefined.__awaiter || function (thisArg, _argument
 
 
 
-const HttpInstanceDefault = Object(_common_http_2__WEBPACK_IMPORTED_MODULE_1__["HttpServiceFactory"])().create({
-  baseURL: _config__WEBPACK_IMPORTED_MODULE_2__["config"].stormglass.url,
-  headers: {
-    Authorization: _config__WEBPACK_IMPORTED_MODULE_2__["config"].stormglass.auth
-  },
-  timeout: 10000
-});
 const stormGlassAPIParams = 'swellDirection%2CswellHeight%2CswellPeriod%2CwaveDirection%2CwaveHeight%2CwindDirection%2CwindSpeed';
 const stormGlassAPISource = 'noaa';
-const StormGlassService = (httpRequest = HttpInstanceDefault) => {
+const StormGlassService = (httpRequest = axios__WEBPACK_IMPORTED_MODULE_1___default.a) => {
   const fetchPointsNormalized = (lat, lng) => __awaiter(void 0, void 0, void 0, function* () {
     const path = `/v2/weather/point?params=${stormGlassAPIParams}&source=${stormGlassAPISource}&lat=${lat}&lng=${lng}`;
-    const response = yield httpRequest.get(path);
+    const response = yield httpRequest.get(_config__WEBPACK_IMPORTED_MODULE_2__["config"].stormglass.url + path, {
+      headers: {
+        Authorization: _config__WEBPACK_IMPORTED_MODULE_2__["config"].stormglass.auth
+      }
+    });
     console.log(response.data);
     return normalizedResponse(response.data);
   });

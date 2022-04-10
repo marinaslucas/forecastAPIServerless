@@ -1,22 +1,18 @@
-import { HttpServiceFactory } from '../../../../common/http-2';
+import axios, { AxiosStatic } from 'axios';
 import { config } from '../config';
 import { StormGlassForecastResponse, StormGlassPoint, StormGlassNormalizedPoint } from '../types.ts/stormglassWeatherResponse';
-
-const HttpInstanceDefault = HttpServiceFactory().create({
-    baseURL: config.stormglass.url,
-    headers: {
-        Authorization: config.stormglass.auth
-    },
-    timeout: 10000
-});
 
 const stormGlassAPIParams = 'swellDirection%2CswellHeight%2CswellPeriod%2CwaveDirection%2CwaveHeight%2CwindDirection%2CwindSpeed';
 const stormGlassAPISource = 'noaa'
 
-export const StormGlassService = (httpRequest = HttpInstanceDefault) => {
+export const StormGlassService = (httpRequest: AxiosStatic = axios) => {
     const fetchPointsNormalized = async (lat: number, lng: number): Promise<StormGlassNormalizedPoint[]> => {
         const path = `/v2/weather/point?params=${stormGlassAPIParams}&source=${stormGlassAPISource}&lat=${lat}&lng=${lng}`;
-        const response = await httpRequest.get<StormGlassForecastResponse>(path);
+        const response = await httpRequest.get<StormGlassForecastResponse>(config.stormglass.url + path, {
+            headers: {
+                Authorization: config.stormglass.auth
+            }
+        });
         console.log(response.data)
         return normalizedResponse(response.data);
     }
