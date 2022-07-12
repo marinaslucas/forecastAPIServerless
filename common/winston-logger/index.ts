@@ -1,15 +1,39 @@
-import * as winston from 'winston';
-import WinstonCloudWatch from 'winston-cloudwatch';
-
-const { combine, timestamp, json, prettyPrint, simple } = winston.format;
-
-const Logger = winston.createLogger({
-  format: combine(timestamp(), json(), process.env.NODE_ENV === 'local' ? prettyPrint() : simple()),
-  transports: [new winston.transports.Console()]
-});
-
-if (process.env.NODE_ENV === 'production') {
-  Logger.add(new WinstonCloudWatch());
+interface Payload {
+  context: string;
+  [key: string]: any;
 }
 
-export default Logger;
+const Logger = () => {
+  function formatPayload(payload: Payload | string): string {
+    if (typeof payload === 'string') {
+      return payload;
+    } else {
+      return JSON.stringify(payload);
+    }
+  }
+
+  function log(payload: Payload | string) {
+    console['log'](formatPayload(payload));
+  }
+
+  function info(payload: Payload | string) {
+    console['info'](formatPayload(payload));
+  }
+
+  function error(payload: Payload | string) {
+    console['error'](formatPayload(payload));
+  }
+
+  function warn(payload: Payload | string) {
+    console['warn'](formatPayload(payload));
+  }
+
+  return {
+    info,
+    error,
+    warn,
+    log
+  };
+};
+
+export default Logger();
