@@ -1,30 +1,31 @@
-import { HttpServiceFactory } from '../../../../common/http-2';
-import { config } from '../config';
+import Logger from '../../../../common/winston-logger';
 import { StormGlassForecastResponse, StormGlassPoint, StormGlassNormalizedPoint } from '../types.ts/stormglassWeatherResponse';
-
-const HttpInstanceDefault = HttpServiceFactory().create({
-    baseURL: config.stormglass.url,
-    headers: {
-        Authorization: config.stormglass.auth
-    },
-    timeout: 10000
-});
+import Request from '../util/request';
 
 const stormGlassAPIParams = 'swellDirection%2CswellHeight%2CswellPeriod%2CwaveDirection%2CwaveHeight%2CwindDirection%2CwindSpeed';
 const stormGlassAPISource = 'noaa'
 
-export const StormGlassService = (httpRequest = HttpInstanceDefault) => {
+export const StormGlassService = (request = Request()) => {
     const fetchPointsNormalized = async (lat: number, lng: number): Promise<StormGlassNormalizedPoint[]> => {
-        const path = `/v2/weather/point?params=${stormGlassAPIParams}&source=${stormGlassAPISource}&lat=${lat}&lng=${lng}`;
-        const response = await httpRequest.get<StormGlassForecastResponse>(path);
-        console.log(response.data)
-        return normalizedResponse(response.data);
+        try {
+            Logger.info({ context: 'StormGlassService.fetchPointsNormalized START...', data: { lat: lat, lng: lng } })
+            const path = `/v2/weather/point?params=${stormGlassAPIParams}&source=${stormGlassAPISource}&lat=${lat}&lng=${lng}`;
+            const response = await request.get<StormGlassForecastResponse>(path);
+            Logger.info({ context: 'StormGlassService.fetchPointsNormalized END.', data: response.data })
+            return normalizedResponse(response.data);
+        } catch (err) {
+            if (request.isRequestError(err)) {
+                throw new Error(`Unexpected error returned by the StormGlass service: Error: ${JSON.stringify(err.response.data)} Code: ${err.response.status}`)
+            }
+            throw new Error(`Unexpected error when trying to communicate to StormGlass: ${err.message}`);
+        }
     }
     return { fetchPointsNormalized }
 }
 export default StormGlassService;
 
 const normalizedResponse = (stormGlassResponse: StormGlassForecastResponse): StormGlassNormalizedPoint[] => {
+    Logger.info({ context: 'StormGlassService.fetchPointsNormalized.normalizedReponse START...' })
     const validPoints: StormGlassPoint[] = stormGlassResponse.hours.filter(isPointValid)
     const normalizedPoints = validPoints.map((point: StormGlassPoint): StormGlassNormalizedPoint => {
         return {
@@ -38,6 +39,7 @@ const normalizedResponse = (stormGlassResponse: StormGlassForecastResponse): Sto
             windSpeed: point.windSpeed[stormGlassAPISource]
         }
     })
+    Logger.info({ context: 'StormGlassService.fetchPointsNormalized.normalizedReponse END...', data: normalizedPoints })
     return normalizedPoints;
 }
 
