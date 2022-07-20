@@ -15,9 +15,9 @@ export const StormGlassService = (request = Request()) => {
             return normalizedResponse(response.data);
         } catch (err) {
             if (request.isRequestError(err)) {
-                throw new Error(`Error: ${JSON.stringify(err.message.data)} Code: ${err.response.status}`)
+                throw new Error(`Unexpected error returned by the StormGlass service: Error: ${JSON.stringify(err.response.data)} Code: ${err.response.status}`)
             }
-            throw new Error(err.message);
+            throw new Error(`Unexpected error when trying to communicate to StormGlass: ${err.message}`);
         }
     }
     return { fetchPointsNormalized }

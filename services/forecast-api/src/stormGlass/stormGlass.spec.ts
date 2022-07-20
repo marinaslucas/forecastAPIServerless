@@ -32,9 +32,21 @@ describe('StormGlassService', () => {
         }
       ]
     };
-    request.get =jest.fn().mockResolvedValue({data: incompleteResponse})
-    const response = await stormGlassService.fetchPointsNormalized(lat,lng);
+    request.get = jest.fn().mockResolvedValue({ data: incompleteResponse })
+    const response = await stormGlassService.fetchPointsNormalized(lat, lng);
     expect(response).toEqual([])
-    // await expect(stormGlassService.fetchPointsNormalized(lat,lng)).rejects.toThrow('Unexpected error when trying to communicate to StormGlass: "Network Error"')
   });
+  it('should get a generic error from StormGlass service when the request fail before reaching the service', async () => {
+    request.get = jest.fn().mockRejectedValue({ message: 'Network Error' }); //Erro quando não é o serviço externo retornando um erro, e sim um erro em nossa aplicação. O Axios retornaria um erro sem status code. Então será um erro desse tipo
+    await expect(stormGlassService.fetchPointsNormalized(lat, lng)).rejects.toThrow('Unexpected error when trying to communicate to StormGlass: Network Error');
+  })
+  it('should get an StormGlassResponseError when the StormGlass service responds with error', async () => {
+    request.get = jest.fn().mockRejectedValue({
+      response: {
+        status: 429,
+        data: { errors: ['Rate Limit reached'] }
+      }
+    })
+    await expect(stormGlassService.fetchPointsNormalized(lat, lng)).rejects.toThrow(`Unexpected error returned by the StormGlass service: Error: {"errors":["Rate Limit reached"]} Code: 429`)
+  })
 });
