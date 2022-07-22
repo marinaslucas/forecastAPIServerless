@@ -196,6 +196,30 @@ const Logger = () => {
 
 /***/ }),
 
+/***/ "../../../services/forecast-api/src/config.ts":
+/*!*******************************************************************************************!*\
+  !*** C:/Users/Marina Lucas/Documents/Dev/forecastAPI/services/forecast-api/src/config.ts ***!
+  \*******************************************************************************************/
+/*! exports provided: config, default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "config", function() { return config; });
+/* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! source-map-support/register */ "../../source-map-support/register.js");
+/* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(source_map_support_register__WEBPACK_IMPORTED_MODULE_0__);
+
+const config = {
+  stage: process.env.STAGE,
+  stormglass: {
+    url: process.env.STORMGLASS_API_URL,
+    auth: process.env.STORMGLASS_API_AUTH
+  }
+};
+/* harmony default export */ __webpack_exports__["default"] = (config);
+
+/***/ }),
+
 /***/ "../../../services/forecast-api/src/constants.ts":
 /*!**********************************************************************************************!*\
   !*** C:/Users/Marina Lucas/Documents/Dev/forecastAPI/services/forecast-api/src/constants.ts ***!
@@ -313,8 +337,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(source_map_support_register__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _common_winston_logger__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../common/winston-logger */ "../../../common/winston-logger/index.ts");
 /* harmony import */ var _util_request__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util/request */ "../../../services/forecast-api/src/util/request.ts");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! axios */ "../../axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../config */ "../../../services/forecast-api/src/config.ts");
 
 
 var __awaiter = undefined && undefined.__awaiter || function (thisArg, _arguments, P, generator) {
@@ -354,8 +377,7 @@ var __awaiter = undefined && undefined.__awaiter || function (thisArg, _argument
 
 const stormGlassAPIParams = 'swellDirection%2CswellHeight%2CswellPeriod%2CwaveDirection%2CwaveHeight%2CwindDirection%2CwindSpeed';
 const stormGlassAPISource = 'noaa';
-const STORMGLASS_API_URL = process.env.STORMGLASS_API_URL;
-const StormGlassService = (request = Object(_util_request__WEBPACK_IMPORTED_MODULE_2__["default"])(), axios = axios__WEBPACK_IMPORTED_MODULE_3___default.a) => {
+const StormGlassService = (request = Object(_util_request__WEBPACK_IMPORTED_MODULE_2__["default"])()) => {
   const fetchPointsNormalized = (lat, lng) => __awaiter(void 0, void 0, void 0, function* () {
     try {
       _common_winston_logger__WEBPACK_IMPORTED_MODULE_1__["default"].info({
@@ -365,8 +387,12 @@ const StormGlassService = (request = Object(_util_request__WEBPACK_IMPORTED_MODU
           lng: lng
         }
       });
-      const path = `https://api.stormglass.io/v2/weather/point?params=${stormGlassAPIParams}&source=${stormGlassAPISource}&lat=${lat}&lng=${lng}`;
-      const response = yield axios.get(path, config);
+      const path = `${_config__WEBPACK_IMPORTED_MODULE_3__["default"].stormglass.url}/v2/weather/point?params=${stormGlassAPIParams}&source=${stormGlassAPISource}&lat=${lat}&lng=${lng}`;
+      const response = yield request.get(path, {
+        headers: {
+          Authorization: _config__WEBPACK_IMPORTED_MODULE_3__["default"].stormglass.auth
+        }
+      });
       _common_winston_logger__WEBPACK_IMPORTED_MODULE_1__["default"].info({
         context: 'StormGlassService.fetchPointsNormalized END.',
         data: response.data
@@ -374,10 +400,10 @@ const StormGlassService = (request = Object(_util_request__WEBPACK_IMPORTED_MODU
       return normalizedResponse(response.data);
     } catch (err) {
       if (request.isRequestError(err)) {
-        throw new Error(`Error: ${JSON.stringify(err.message.data)} Code: ${err.response.status}`);
+        throw new Error(`Unexpected error returned by the StormGlass service: Error: ${JSON.stringify(err.response.data)} Code: ${err.response.status}`);
       }
 
-      throw new Error(err.message);
+      throw new Error(`Unexpected error when trying to communicate to StormGlass: ${err.message}`);
     }
   });
 

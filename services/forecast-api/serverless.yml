@@ -9,6 +9,10 @@ provider:
   lambdaHashingVersion: 20201221
   stage: ${opt:stage, 'dev'}
   region: us-east-1
+  environment:
+    REGION: ${aws:region}
+    STORMGLASS_API_URL: ${env:STORMGLASS_API_URL}
+    STORMGLASS_API_AUTH: ${env:STORMGLASS_API_AUTH}
 
 custom:
   bundle:

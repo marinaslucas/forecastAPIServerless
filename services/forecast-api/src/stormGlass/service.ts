@@ -1,6 +1,8 @@
+import { AxiosRequestConfig } from 'axios';
 import Logger from '../../../../common/winston-logger';
 import { StormGlassForecastResponse, StormGlassPoint, StormGlassNormalizedPoint } from '../types.ts/stormglassWeatherResponse';
-import Request from '../util/request';
+import Request, { RequestConfig } from '../util/request';
+import config from '../config';
 
 const stormGlassAPIParams = 'swellDirection%2CswellHeight%2CswellPeriod%2CwaveDirection%2CwaveHeight%2CwindDirection%2CwindSpeed';
 const stormGlassAPISource = 'noaa'
@@ -9,8 +11,8 @@ export const StormGlassService = (request = Request()) => {
     const fetchPointsNormalized = async (lat: number, lng: number): Promise<StormGlassNormalizedPoint[]> => {
         try {
             Logger.info({ context: 'StormGlassService.fetchPointsNormalized START...', data: { lat: lat, lng: lng } })
-            const path = `/v2/weather/point?params=${stormGlassAPIParams}&source=${stormGlassAPISource}&lat=${lat}&lng=${lng}`;
-            const response = await request.get<StormGlassForecastResponse>(path);
+            const url = `${config.stormglass.url}/v2/weather/point?params=${stormGlassAPIParams}&source=${stormGlassAPISource}&lat=${lat}&lng=${lng}`;
+            const response = await request.get<StormGlassForecastResponse>(url, { headers: { Authorization: config.stormglass.auth } });
             Logger.info({ context: 'StormGlassService.fetchPointsNormalized END.', data: response.data })
             return normalizedResponse(response.data);
         } catch (err) {
